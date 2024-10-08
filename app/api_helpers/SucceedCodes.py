@@ -11,3 +11,4 @@ class BodyCode:
 class SucceedCodes:
     AUTHENTICATION = BodyCode(21001, "Authenticate successfully")
     CAL_BODY_FAT = BodyCode(31001, "Calculate Body Fat successfully")
+    SCHEDULE_DECISION = BodyCode(31002, "Decide Recommend Schedule successfully")

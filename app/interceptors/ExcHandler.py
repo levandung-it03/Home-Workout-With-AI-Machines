@@ -11,16 +11,11 @@ class ExcHandler:
 
     def turn_on(self):
         self.application_exception_filter()
-        self.unaware_exception_filter()
 
     def application_exception_filter(self):
-        @self.app.exception_handler(ApplicationException)
-        async def application_exception_handler(request: Request, exc: ApplicationException):
-            response = ApiResponse(exc.errorCodes, None)
-            return response
-
-    def unaware_exception_filter(self):
         @self.app.exception_handler(Exception)
-        async def unaware_exception_handler(request: Request, exc: Exception):
-            response = ApiResponse(ErrorCodes.UNAWARE_ERR, None)
-            return response
+        async def handle_application_exception(request: Request, exc: ApplicationException):
+            try:
+                return ApiResponse(exc.errorCodes, None)
+            except AttributeError:
+                return ApiResponse(ErrorCodes.UNAWARE_ERR, None)

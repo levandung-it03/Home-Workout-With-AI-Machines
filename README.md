@@ -6,4 +6,4 @@
 # terminal
 > pip install opencv-contrib-python matplotlib uvicorn python-dotenv python-jose redis python-multipart pandas sqlalchemy
 
-> pip install redis datetime redis-om
+> pip install redis datetime redis-om pymysql

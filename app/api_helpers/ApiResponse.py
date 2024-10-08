@@ -1,6 +1,7 @@
 import time
 from typing import Any
 
+from sqlalchemy.sql.operators import truediv
 from starlette.responses import JSONResponse
 
 from app.api_helpers.ErrorCodes import BodyCode
@@ -20,4 +21,11 @@ class ApiResponse(JSONResponse):
             "data": data,
             "responseTime": get_response_time()
         }
-        super().__init__(content=self.content, status_code=error_codes.httpStatus.value)
+        super().__init__(
+            content=self.content,
+            status_code=error_codes.httpStatus.value,
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Ngrok-Skip-Browser-Warning": "true"
+            }
+        )

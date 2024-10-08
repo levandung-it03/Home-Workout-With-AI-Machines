@@ -1,20 +1,16 @@
-from redis import StrictRedis
+import os
 
+import redis_om
+from dotenv import load_dotenv
 
-class Settings:
-    REDIS_HOST: str = "localhost"
-    REDIS_PORT: int = 6379
-    REDIS_TIMEOUT: int = 60  # in seconds
-    REDIS_PASSWORD: str = None  # set to None if no password
+load_dotenv()
+REDIS_HOST = str(os.getenv("REDIS_HOST"))
+REDIS_PORT = int(os.getenv("REDIS_PORT"))
+REDIS_TIMEOUT = int(os.getenv("REDIS_TIMEOUT"))
 
-
-def connect_and_return():
-    settings = Settings()
-    return StrictRedis(
-        host=settings.REDIS_HOST,
-        port=settings.REDIS_PORT,
-        password=settings.REDIS_PASSWORD,
-        socket_timeout=settings.REDIS_TIMEOUT / 1000.0  # Convert to seconds
-    )
-
-RedisConnection = connect_and_return()
+RedisConnection = redis_om.get_redis_connection(
+    host=REDIS_HOST,
+    port=REDIS_PORT,
+    decode_responses=True,
+    socket_timeout=REDIS_TIMEOUT
+)

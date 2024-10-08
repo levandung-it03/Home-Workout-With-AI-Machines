@@ -25,7 +25,8 @@ def updateById(db: Session, decisionId: int, scheduleDec: models.ScheduleDecisio
     raw.gender = scheduleDec.gender
     raw.aim = scheduleDec.aim
     raw.weight = scheduleDec.weight
-    raw.fat_ratio_range = scheduleDec.fat_ratio_range
+    raw.min_fat_ratio = scheduleDec.min_fat_ratio
+    raw.max_fat_ratio = scheduleDec.max_fat_ratio
     raw.schedule_id = scheduleDec.schedule_id
     db.commit()
     db.refresh(scheduleDec)
