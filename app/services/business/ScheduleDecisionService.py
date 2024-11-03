@@ -1,8 +1,14 @@
+import math
+
 import cv2
 import numpy as np
 
+from app.app_sql.setup_database import SessionLocal
 from app.machine_cores import SiftBodyFat, ScheduleDecisionTree
-from app.models.ScheduleDecisionModel import DecideScheduleDto
+from app.dtos.ScheduleDecisionDtos import DecideScheduleDto, NewScheduleDecisionDto, PaginatedScheduleDecisionDto
+from app.app_sql.models import ScheduleDecision
+from app.services.sql import ScheduleDecisionCrud
+from app.services.sql.ScheduleDecisionCrud import page_size
 
 
 async def cal_body_fat_detection(image, gender):
@@ -14,4 +20,33 @@ async def cal_body_fat_detection(image, gender):
 
 def decide_schedule_id(request: DecideScheduleDto):
     result = ScheduleDecisionTree.scheduleDecide(request)
-    return dict([("scheduleId", result)])
+    return {"scheduleId": int(result)}
+
+
+def add_decision_schedule_dataline(request: NewScheduleDecisionDto):
+    new_schedule = ScheduleDecision(
+        age = request.age, gender = request.gender,
+        weight = request.weight, body_fat_threshold = request.body_fat_threshold,
+        session = request.session, schedule_id = request.schedule_id
+    )
+    db_session = SessionLocal()
+    return ScheduleDecisionCrud.save(db_session, new_schedule).to_dict()
+
+
+def delete_decision_schedule_dataline(line_id: int):
+    db_session = SessionLocal()
+    ScheduleDecisionCrud.deleteById(db_session, line_id)
+
+
+def export_decision_schedule_dataset_to_csv():
+    db_session = SessionLocal()
+    ScheduleDecisionCrud.export_to_csv(db_session)
+
+
+def get_schedule_decision_dataset_pages(request: PaginatedScheduleDecisionDto):
+    db_session = SessionLocal()
+    return {
+        "data": [obj.to_dict() for obj in ScheduleDecisionCrud.findAllPaginated(db_session, request)],
+        "currentPage": request.page,
+        "totalPages": math.ceil(ScheduleDecisionCrud.countAll(db_session) / page_size),
+    }

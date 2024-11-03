@@ -18,13 +18,11 @@ def templatesMatching(inp_img, gender):
 
 def core_templatesMatching(inp, templates, gender):
     inp_w = 200
-    # inp_h = int(inp_w * inp.shape[0] / inp.shape[1])
-    inp_h = 200
     tpl_w = 160 if gender == Gender.GENDER_FEMALE else 130
     tpl_h = 100 if gender == Gender.GENDER_FEMALE else 147
 
-    inp = cv2.resize(inp, (inp_w, (inp_w if (inp_h > tpl_h) else inp_h)))
-    colored_inp = cv2.cvtColor(inp, cv2.COLOR_BGR2GRAY)
+    inp = cv2.resize(inp, (inp_w, inp_w))
+    colored_inp = cv2.cvtColor(inp, cv2.COLOR_BGR2RGB)
     colored_templates = [cv2.cvtColor(template, cv2.COLOR_BGR2GRAY) for template in templates]
     colored_templates = [cv2.resize(template, (tpl_w, tpl_h)) for template in colored_templates]
 
@@ -35,12 +33,13 @@ def core_templatesMatching(inp, templates, gender):
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(tmap)
         # [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED] will be min_loc, else max_loc
         mm_loc_info.append([max_val, max_loc, ind])
+
     # max_val at the top
     mm_max_val = max(mm_loc_info, key=lambda i: i[0])
     mm_max_ind = mm_loc_info.index(mm_max_val)
 
-    top_left = mm_loc_info[mm_max_ind][1]
-    w, h = colored_templates[mm_loc_info[mm_max_ind][2]].shape[::-1]
+    top_left = mm_loc_info[mm_max_ind][1]   # max_loc[1]
+    w, h = colored_templates[mm_loc_info[mm_max_ind][2]].shape[::-1]    # template[ind].shape
     bottom_right = (top_left[0] + w, top_left[1] + h)
 
     cv2.rectangle(inp, top_left, bottom_right, (255,255,255), 5)

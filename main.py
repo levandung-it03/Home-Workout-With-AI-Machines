@@ -1,12 +1,26 @@
 # from fastapi import FastAPI
+from contextlib import asynccontextmanager
+
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.app_sql import initialize_data
+from app.app_sql.setup_database import Base, engine
 from app.interceptors.AuthInterceptor import AuthInterceptor
 from app.interceptors.ExcHandler import ExcHandler
 from fastapi import FastAPI
 from app.routers import ScheduleDecisionRouter, TestRouter
 
-app = FastAPI()
+
+# Initialize data
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Initialize models
+    Base.metadata.create_all(bind=engine)
+    #Initialize data
+    await initialize_data.run()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

@@ -67,7 +67,9 @@ def core_siftDetection(inp, gender, dataset):
                 best_matches_scores[i] = best_matches_scores.__getitem__(0) - max_threshold
 
     best_matches_scores = [s for s in best_matches_scores if s > 0]
-    result = np.average(best_matches_scores, axis=0)
+
+    # Nearest to the number which is a multiple of 5.
+    result = round(np.average(best_matches_scores, axis=0) / 5) * 5
 
     print("Matches:", best_matches_scores, "Res:", result, end=" || ")
 

@@ -11,7 +11,7 @@ class BodyCode:
 class ErrorCodes:
     # --Generals(10)
     UNAWARE_ERR = BodyCode(10000, "Unaware exception's thrown from resource server", HTTPStatus.BAD_REQUEST)
-    VALIDATOR_ERR_RESPONSE = BodyCode(10001, "Invalid variable type or format of field \"${field}\"",
+    VALIDATOR_ERR_RESPONSE = BodyCode(10001, "Invalid variable type or format of field '${field}'",
                                       HTTPStatus.BAD_REQUEST)
     PARSE_JSON_ERR = BodyCode(10002, "Invalid variable type or format of field '${field}'", HTTPStatus.BAD_REQUEST)
     # --Auth(11)
