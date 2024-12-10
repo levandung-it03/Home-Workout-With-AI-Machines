@@ -1,5 +1,6 @@
 from typing import Optional
 
+from fastapi import UploadFile, File
 from pydantic import BaseModel, ConfigDict
 
 class DecideScheduleDto(BaseModel):
@@ -8,7 +9,6 @@ class DecideScheduleDto(BaseModel):
     weight: int
     bodyFat: float
     session: int
-
 
 class NewScheduleDecisionDto(BaseModel):
     age: int

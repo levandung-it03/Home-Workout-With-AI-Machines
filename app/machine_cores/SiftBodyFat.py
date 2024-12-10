@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 import os
 
+from app.api_helpers.CustomeExc import ApplicationException
+from app.api_helpers.ErrorCodes import ErrorCodes
 from app.machine_cores.TemplateMatching import templatesMatching
 from app.models.Enums import Gender
 
@@ -37,6 +39,8 @@ def core_siftDetection(inp, gender, dataset):
 
         dts_keypoints, dts_descriptors = sift.detectAndCompute(gray_dts_img, None)
         matches = bf_matcher.match(inp_descriptors, dts_descriptors)
+        if (len(matches) == 0):
+            raise ApplicationException(ErrorCodes.NONE_KEYPOINT_DETECTED)
         best_match = min([m.distance for m in matches])
         best_matches_scores.append([ind, best_match])
         # matching_res = cv2.drawMatches(inp, inp_keypoints, dts_img, dts_keypoints,
@@ -68,8 +72,7 @@ def core_siftDetection(inp, gender, dataset):
 
     best_matches_scores = [s for s in best_matches_scores if s > 0]
 
-    # Nearest to the number which is a multiple of 5.
-    result = round(np.average(best_matches_scores, axis=0) / 5) * 5
+    result = np.average(best_matches_scores, axis=0)
 
     print("Matches:", best_matches_scores, "Res:", result, end=" || ")
 

@@ -20,3 +20,5 @@ class ErrorCodes:
     EXPIRED_TOKEN = BodyCode(11003, "Token is expired", HTTPStatus.FORBIDDEN)
     FORBIDDEN_USER = BodyCode(11004, "User not found or access denied", HTTPStatus.BAD_REQUEST)
     LOGIN_SESSION_EXPIRED = BodyCode(11005, "Login session is expired, please login again", HTTPStatus.BAD_REQUEST)
+    # --ScheduleDecision(12)
+    NONE_KEYPOINT_DETECTED = BodyCode(12001, "Image too dark or not your body, please try again", HTTPStatus.BAD_REQUEST)

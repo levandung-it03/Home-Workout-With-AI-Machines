@@ -5,11 +5,10 @@ from fastapi.params import Depends
 
 from app.api_helpers.ApiResponse import ApiResponse
 from app.api_helpers.SucceedCodes import SucceedCodes
-from app.models.Enums import Gender
 from app.dtos.ScheduleDecisionDtos import DecideScheduleDto, NewScheduleDecisionDto, PaginatedScheduleDecisionDto, \
     DeleteScheduleDecisionDto
 from app.services.business import ScheduleDecisionService
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Form
 
 load_dotenv()
 admin_endpoints = str(os.getenv("FAST_API_ADMIN_ENDPOINTS"))
@@ -33,7 +32,7 @@ async def export_decision_schedule_dataset_to_csv():
     return ApiResponse(SucceedCodes.EXPORT_SCHEDULE_CSV, None)
 
 @router.post(user_endpoints + "/v1/cal-body-fat-detection")
-async def cal_body_fat_detection(image: UploadFile = File(...), gender: int = Gender.GENDER_MALE):
+async def cal_body_fat_detection(image: UploadFile = File(...), gender: int = Form(...)):
     return ApiResponse(
         SucceedCodes.CAL_BODY_FAT,
         await ScheduleDecisionService.cal_body_fat_detection(image, gender))

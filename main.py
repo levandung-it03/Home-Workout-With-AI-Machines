@@ -9,6 +9,7 @@ from app.interceptors.AuthInterceptor import AuthInterceptor
 from app.interceptors.ExcHandler import ExcHandler
 from fastapi import FastAPI
 from app.routers import ScheduleDecisionRouter, TestRouter
+from app.services.business import ScheduleDecisionService
 
 
 # Initialize data
@@ -16,6 +17,7 @@ from app.routers import ScheduleDecisionRouter, TestRouter
 async def lifespan(app: FastAPI):
     # Initialize models
     Base.metadata.create_all(bind=engine)
+    ScheduleDecisionService.schedule_decision_model_preparation_on_startup()
     #Initialize data
     await initialize_data.run()
     yield

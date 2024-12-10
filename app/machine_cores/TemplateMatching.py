@@ -17,12 +17,13 @@ def templatesMatching(inp_img, gender):
     )
 
 def core_templatesMatching(inp, templates, gender):
-    inp_w = 200
-    tpl_w = 160 if gender == Gender.GENDER_FEMALE else 130
-    tpl_h = 100 if gender == Gender.GENDER_FEMALE else 147
-
-    inp = cv2.resize(inp, (inp_w, inp_w))
-    colored_inp = cv2.cvtColor(inp, cv2.COLOR_BGR2RGB)
+    inp_h = 200
+    inp_w = round((inp_h / inp.shape[0]) * inp.shape[1])
+    tpl_h = 140 if gender == Gender.GENDER_MALE else 100
+    tpl_w = 140
+    print(gender)
+    inp = cv2.resize(inp, (inp_w if inp_w > tpl_w else tpl_w, inp_h))
+    colored_inp = cv2.cvtColor(inp, cv2.COLOR_BGR2GRAY)
     colored_templates = [cv2.cvtColor(template, cv2.COLOR_BGR2GRAY) for template in templates]
     colored_templates = [cv2.resize(template, (tpl_w, tpl_h)) for template in colored_templates]
 

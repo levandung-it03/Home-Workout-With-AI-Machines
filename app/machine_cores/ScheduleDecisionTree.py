@@ -4,22 +4,23 @@ from sklearn.tree import DecisionTreeClassifier
 
 from app.dtos.ScheduleDecisionDtos import DecideScheduleDto
 
-
-def scheduleDecide(request: DecideScheduleDto):
-    data_frame = pd.read_csv(os.path.join(os.getcwd(), "app/dataset/csv/schedule.csv"))
-    data_frame = data_frame.dropna()    # drop if there are missing values
-
+def predictScheduleId(request: DecideScheduleDto, global_schedule_decision_model: DecisionTreeClassifier):
     ft_input = pd.DataFrame([[
         request.age,
         request.gender,
         request.weight,
-        request.bodyFat,
+        # Nearest to the number which is a multiple of 5.
+        round(request.bodyFat / 5) * 5,
         request.session
     ]], columns=["age", "gender", "weight", "body_fat_threshold", "session"])
-    return core_scheduleDecision(data_frame, ft_input)
+    return global_schedule_decision_model.predict(ft_input)[0]
 
+def trainScheduleDecide():
+    data_frame = pd.read_csv(os.path.join(os.getcwd(), "app/dataset/csv/schedule.csv"))
+    data_frame = data_frame.dropna()    # drop if there are missing values
+    return core_trainScheduleDecide(data_frame)
 
-def core_scheduleDecision(data_frame, input_data_frame):
+def core_trainScheduleDecide(data_frame):
     features = ["age", "gender", "weight", "body_fat_threshold", "session"]
     target = "schedule_id"
     unique_labels = data_frame[target].unique()
@@ -32,8 +33,7 @@ def core_scheduleDecision(data_frame, input_data_frame):
     model = DecisionTreeClassifier(class_weight=class_weights, random_state=42)
     model.fit(ft_data, tg_data)
 
-    predictions = model.predict(input_data_frame)
-    return predictions[0]
+    return model
 
 # from app.models.Enums import Gender
 # scheduleDecide(DecideScheduleDto(
