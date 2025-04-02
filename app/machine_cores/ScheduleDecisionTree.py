@@ -1,10 +1,14 @@
 import os
+
+import joblib
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
 
 from app.dtos.ScheduleDecisionDtos import DecideScheduleDto
 
-def predictScheduleId(request: DecideScheduleDto, global_schedule_decision_model: DecisionTreeClassifier):
+model_path = os.path.join(os.getcwd(), "app/machine_cores/train_schedule_model.pkl")
+
+def predictScheduleId(request: DecideScheduleDto):
     ft_input = pd.DataFrame([[
         request.age,
         request.gender,
@@ -13,12 +17,14 @@ def predictScheduleId(request: DecideScheduleDto, global_schedule_decision_model
         round(request.bodyFat / 5) * 5,
         request.session
     ]], columns=["age", "gender", "weight", "body_fat_threshold", "session"])
-    return global_schedule_decision_model.predict(ft_input)[0]
+    model = joblib.load(model_path)
+    return model.predict(ft_input)[0]
 
 def trainScheduleDecide():
     data_frame = pd.read_csv(os.path.join(os.getcwd(), "app/dataset/csv/schedule.csv"))
     data_frame = data_frame.dropna()    # drop if there are missing values
-    return core_trainScheduleDecide(data_frame)
+    model = core_trainScheduleDecide(data_frame)
+    joblib.dump(model, model_path)
 
 def core_trainScheduleDecide(data_frame):
     features = ["age", "gender", "weight", "body_fat_threshold", "session"]

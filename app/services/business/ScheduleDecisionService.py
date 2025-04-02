@@ -10,13 +10,6 @@ from app.app_sql.models import ScheduleDecision
 from app.services.sql import ScheduleDecisionCrud
 from app.services.sql.ScheduleDecisionCrud import page_size
 
-global_schedule_decision_model = None
-
-def schedule_decision_model_preparation_on_startup():
-    global global_schedule_decision_model
-    global_schedule_decision_model = ScheduleDecisionTree.trainScheduleDecide()
-
-
 async def cal_body_fat_detection(image, gender):
     contents = await image.read()  # Read the file content
     img = cv2.imdecode(np.frombuffer(contents, np.uint8), cv2.IMREAD_COLOR)
@@ -25,8 +18,7 @@ async def cal_body_fat_detection(image, gender):
 
 
 def decide_schedule_id(request: DecideScheduleDto):
-    global global_schedule_decision_model
-    result = ScheduleDecisionTree.predictScheduleId(request, global_schedule_decision_model)
+    result = ScheduleDecisionTree.predictScheduleId(request)
     return {"scheduleId": int(result)}
 
 
@@ -46,10 +38,9 @@ def delete_decision_schedule_dataline(line_id: int):
 
 
 def export_decision_schedule_dataset_to_csv():
-    global global_schedule_decision_model
     db_session = SessionLocal()
     ScheduleDecisionCrud.export_to_csv(db_session)
-    ScheduleDecisionTree.trainScheduleDecide(global_schedule_decision_model)
+    ScheduleDecisionTree.trainScheduleDecide()
 
 
 def get_schedule_decision_dataset_pages(request: PaginatedScheduleDecisionDto):
