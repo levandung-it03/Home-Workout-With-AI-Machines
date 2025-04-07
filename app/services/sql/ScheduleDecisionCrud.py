@@ -32,7 +32,7 @@ def updateById(db: Session, decisionId: int, scheduleDec: ScheduleDecision):
     raw.body_fat_threshold = scheduleDec.body_fat_threshold
     raw.schedule_id = scheduleDec.schedule_id
     db.commit()
-    db.refresh(scheduleDec)
+    db.refresh(raw)
     return scheduleDec
 
 def findAll(db: Session):
@@ -74,7 +74,8 @@ def saveAll(db: Session, scheduleDecs: list[ScheduleDecision]):
     for schedule in scheduleDecs:
         db.add(schedule)
     db.commit()
-    db.refresh(scheduleDecs)
+    for schedule in scheduleDecs:
+        db.refresh(schedule)
     return scheduleDecs
 
 def countAll(db: Session):

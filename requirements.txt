@@ -1,0 +1,15 @@
+pydantic~=2.9.2
+SQLAlchemy~=2.0.35
+python-dotenv~=1.0.1
+pandas~=2.2.3
+python-jose~=3.3.0
+starlette~=0.38.6
+numpy~=2.1.1
+matplotlib~=3.9.2
+joblib~=1.4.2
+scikit-learn~=1.5.2
+mysqlclient~=2.2.4
+redis-om~=0.3.4
+redis~=5.1.1
+opencv-contrib-python~=4.10.0.84
+opencv-python-headless~=4.10.0.84

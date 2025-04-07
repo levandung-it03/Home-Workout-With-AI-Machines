@@ -1,0 +1,60 @@
+# =======================
+# Configuration to expose FastAPI Pod (for User public accessing and another Pods connection)
+# =======================
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-service
+  labels:
+    app: hwwai
+spec:
+  type: NodePort
+  selector:
+    app: hwwai
+    tier: fastapi
+  ports:
+    - protocol: TCP
+      port: 8000  # Accessing Port (typed by User)
+      targetPort: 8000  # Real connecting Port (mapping with the above "port") into application
+      nodePort: 30009 # In range [30000, 32767]
+
+---
+# =======================
+# Configuration for FastAPI App
+# =======================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+  labels:
+    app: hwwai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hwwai
+      tier: fastapi
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: hwwai
+        tier: fastapi
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: minikube  # Force to run on "minikube"
+      containers:
+      - image: levandungit03/hwwai-fastapi:0.0.1
+        name: fastapi-app
+        env:
+          - name: SQLALCHEMY_DATABASE_URL
+            value: "mysql+mysqldb://root:sa@mysql-pv:3306/hww_ai_dataset"
+          - name: REDIS_CONNECTION
+            value: "redis-service"
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "1000m"
+        ports:
+        - containerPort: 8000
