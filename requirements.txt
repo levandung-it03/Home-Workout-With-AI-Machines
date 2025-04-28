@@ -11,5 +11,6 @@ scikit-learn~=1.5.2
 mysqlclient~=2.2.4
 redis-om~=0.3.4
 redis~=5.1.1
+python-multipart~=0.0.20
 opencv-contrib-python~=4.10.0.84
 opencv-python-headless~=4.10.0.84

@@ -1,7 +1,7 @@
 # from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
 
 from app.app_sql import initialize_data
 from app.app_sql.setup_database import Base, engine
@@ -21,13 +21,13 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["GET", "PUT", "POST", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["GET", "PUT", "POST", "DELETE", "OPTIONS"],
+#     allow_headers=["*"],
+# )
 
 # Create Exception Handler
 exceptionHandler = ExcHandler(app)
