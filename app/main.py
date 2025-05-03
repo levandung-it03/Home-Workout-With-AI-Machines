@@ -1,4 +1,3 @@
-# from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 # from fastapi.middleware.cors import CORSMiddleware
@@ -20,7 +19,7 @@ async def lifespan(app: FastAPI):
     await initialize_data.run()
     yield
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(swagger_ui_parameters={"syntaxHighlight": {"theme": "obsidian"}}, lifespan=lifespan)
 # app.add_middleware(
 #     CORSMiddleware,
 #     allow_origins=["*"],
